@@ -23,13 +23,13 @@ class FilamentFileBrowserCommand extends Command
 
         // Create temp directory for zip downloads if it doesn't exist
         $tempDir = storage_path('app/temp');
-        if (!File::exists($tempDir)) {
+        if (! File::exists($tempDir)) {
             File::makeDirectory($tempDir, 0755, true);
             $this->info('✅ Temporary directory created for zip downloads');
         }
 
         // Check if the public disk is configured
-        if (!config('filesystems.disks.public')) {
+        if (! config('filesystems.disks.public')) {
             $this->warn('⚠️ Public disk not found in your filesystems configuration');
             $this->info('Make sure to configure your disks in config/filesystems.php');
         } else {
@@ -37,7 +37,7 @@ class FilamentFileBrowserCommand extends Command
         }
 
         // Create symbolic link for public disk if it doesn't exist
-        if (!file_exists(public_path('storage'))) {
+        if (! file_exists(public_path('storage'))) {
             $this->callSilently('storage:link');
             $this->info('✅ Storage symbolic link created');
         }

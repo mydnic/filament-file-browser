@@ -2,13 +2,9 @@
 
 namespace Mydnic\FilamentFileBrowser\Components;
 
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\ActionSize;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
@@ -20,10 +16,15 @@ class FileBrowser extends Widget
     protected static string $view = 'filament-file-browser::components.file-browser';
 
     public ?string $disk = null;
+
     public ?string $path = null;
+
     public $files = [];
+
     public $uploadedFiles = [];
+
     public $selectedItems = [];
+
     public $breadcrumbs = [];
 
     protected $listeners = ['refreshFileBrowser' => '$refresh'];
@@ -120,6 +121,7 @@ class FileBrowser extends Widget
                 ->title('No items selected')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -142,6 +144,7 @@ class FileBrowser extends Widget
                 ->title('No items selected')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -170,7 +173,7 @@ class FileBrowser extends Widget
         $service = app(FileBrowserService::class);
         $service->deleteItems($this->disk, [$path]);
         $this->loadFiles();
-        
+
         Notification::make()
             ->title('Item deleted successfully')
             ->success()
@@ -181,11 +184,11 @@ class FileBrowser extends Widget
     {
         $disks = config('filesystems.disks');
         $options = [];
-        
+
         foreach ($disks as $disk => $config) {
             $options[$disk] = $disk;
         }
-        
+
         return $options;
     }
 
