@@ -4,6 +4,7 @@ namespace Mydnic\FilamentFileBrowser;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Mydnic\FilamentFileBrowser\Pages\FileBrowserPage;
 
 class FilamentFileBrowserPlugin implements Plugin
 {
@@ -14,7 +15,10 @@ class FilamentFileBrowserPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        //
+        $panel
+            ->pages([
+                FileBrowserPage::class,
+            ]);
     }
 
     public function boot(Panel $panel): void

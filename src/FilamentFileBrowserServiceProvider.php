@@ -9,11 +9,14 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Route;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Mydnic\FilamentFileBrowser\Commands\FilamentFileBrowserCommand;
+use Mydnic\FilamentFileBrowser\Components\FileBrowser;
 use Mydnic\FilamentFileBrowser\Testing\TestsFilamentFileBrowser;
 
 class FilamentFileBrowserServiceProvider extends PackageServiceProvider
@@ -30,6 +33,7 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
+            ->hasConfigFile('filament-file-browser')
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
@@ -38,12 +42,6 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
                     ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('mydnic/filament-file-browser');
             });
-
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
 
         if (file_exists($package->basePath('/../database/migrations'))) {
             $package->hasMigrations($this->getMigrations());
@@ -58,10 +56,20 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void {}
+    public function packageRegistered(): void
+    {
+        // Register the service
+        $this->app->singleton(FileBrowser::class);
+        
+        // Register routes
+        $this->registerRoutes();
+    }
 
     public function packageBooted(): void
     {
+        // Register Livewire components
+        $this->registerLivewireComponents();
+        
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
@@ -87,6 +95,21 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentFileBrowser);
+    }
+    
+    protected function registerRoutes(): void
+    {
+        Route::group([
+            'prefix' => 'filament-file-browser',
+            'middleware' => ['web', 'auth'],
+        ], function () {
+            $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
+        });
+    }
+    
+    protected function registerLivewireComponents(): void
+    {
+        Livewire::component('filament-file-browser::file-browser', FileBrowser::class);
     }
 
     protected function getAssetPackageName(): ?string
@@ -121,15 +144,9 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
      */
     protected function getIcons(): array
     {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getRoutes(): array
-    {
-        return [];
+        return [
+            'file-browser' => __DIR__ . '/../resources/icons/file-browser.svg',
+        ];
     }
 
     /**
