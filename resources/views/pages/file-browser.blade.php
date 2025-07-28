@@ -70,13 +70,13 @@
             </x-filament::section>
         @endif
 
-        {{-- File Browser Table --}}
+        {{-- File Browser Grid --}}
         <x-filament::section>
             <x-slot name="heading">
                 Files & Folders
             </x-slot>
             
-            @include('filament-file-browser::components.file-browser-table')
+            @include('filament-file-browser::components.file-browser-grid')
         </x-filament::section>
     </div>
 </x-filament::page>

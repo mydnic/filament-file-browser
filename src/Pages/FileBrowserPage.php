@@ -13,6 +13,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
+use Illuminate\Support\Facades\Log;
 
 class FileBrowserPage extends Page implements HasForms
 {
@@ -113,7 +114,18 @@ class FileBrowserPage extends Page implements HasForms
     public function loadFiles(): void
     {
         $service = app(FileBrowserService::class);
+
+        // Add debugging
+        Log::debug('Loading files from disk: ' . $this->disk . ', path: ' . $this->path);
+
         $this->files = $service->getFilesAndDirectories($this->disk, $this->path);
+
+        // Debug the loaded files
+        Log::debug('Loaded ' . count($this->files) . ' files/folders');
+        foreach ($this->files as $file) {
+            Log::debug('File: ' . $file['name'] . ' (type: ' . $file['type'] . ', path: ' . $file['path'] . ')');
+        }
+
         $this->updateBreadcrumbs();
     }
 
