@@ -10,10 +10,10 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
-use Illuminate\Support\Facades\Log;
 
 class FileBrowserPage extends Page implements HasForms
 {
@@ -108,6 +108,7 @@ class FileBrowserPage extends Page implements HasForms
         foreach (config('filesystems.disks', []) as $name => $config) {
             $disks[$name] = ucfirst($name);
         }
+
         return $disks;
     }
 
@@ -212,6 +213,7 @@ class FileBrowserPage extends Page implements HasForms
                 ->title('No items selected')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -237,6 +239,7 @@ class FileBrowserPage extends Page implements HasForms
                 ->title('No items selected')
                 ->warning()
                 ->send();
+
             return;
         }
 
@@ -244,6 +247,7 @@ class FileBrowserPage extends Page implements HasForms
             // Single file download
             $path = $this->selectedItems[0];
             $this->downloadSingleFile($path);
+
             return;
         }
 
@@ -257,7 +261,7 @@ class FileBrowserPage extends Page implements HasForms
             $url = Storage::disk($this->disk)->url($path);
 
             // Use a simpler approach without complex JavaScript
-//            $this->js("window.open(" . json_encode($url) . ", '_blank');");
+            //            $this->js("window.open(" . json_encode($url) . ", '_blank');");
 
             Notification::make()
                 ->title('Download started')
@@ -299,7 +303,7 @@ class FileBrowserPage extends Page implements HasForms
     {
         try {
             $url = Storage::disk($this->disk)->url($path);
-//            $this->js("window.open(" . json_encode($url) . ", '_blank');");
+            //            $this->js("window.open(" . json_encode($url) . ", '_blank');");
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Error opening file')
