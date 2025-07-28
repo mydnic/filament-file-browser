@@ -91,6 +91,14 @@ class FileBrowserService
     }
 
     /**
+     * Delete a single item (file or directory)
+     */
+    public function deleteItem(string $disk, string $path): void
+    {
+        $this->deleteItems($disk, [$path]);
+    }
+
+    /**
      * Create a zip file from selected items
      */
     public function createZipFromItems(string $disk, array $paths): string
@@ -120,7 +128,15 @@ class FileBrowserService
 
         $zip->close();
 
-        return $zipFileName;
+        return $zipFilePath;
+    }
+
+    /**
+     * Create a zip file from selected files (alias for compatibility)
+     */
+    public function createZipFromFiles(string $disk, array $paths): string
+    {
+        return $this->createZipFromItems($disk, $paths);
     }
 
     /**

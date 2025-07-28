@@ -15,10 +15,9 @@ class FilamentFileBrowserPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel
-            ->pages([
-                FileBrowserPage::class,
-            ]);
+        $panel->pages([
+            FileBrowserPage::class,
+        ]);
     }
 
     public function boot(Panel $panel): void

@@ -1,83 +1,38 @@
 # Filament File Browser
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/mydnic/filament-file-browser.svg?style=flat-square)](https://packagist.org/packages/mydnic/filament-file-browser)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/mydnic/filament-file-browser/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/mydnic/filament-file-browser/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/mydnic/filament-file-browser/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/mydnic/filament-file-browser/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/mydnic/filament-file-browser.svg?style=flat-square)](https://packagist.org/packages/mydnic/filament-file-browser)
-
-A powerful file browser plugin for Filament that allows users to browse, upload, download, and manage files on any configured Laravel filesystem disk.
-
-![Filament File Browser Screenshot](https://github.com/mydnic/filament-file-browser/raw/main/art/screenshot.png)
+A clean and modern file browser plugin for Filament that allows you to browse, upload, and manage files across different filesystem disks, including S3 buckets. The interface mimics traditional OS file explorers like Dolphin on Linux.
 
 ## Features
 
-- Browse files and directories on any configured filesystem disk
-- Upload files to the current directory
-- Download individual files or multiple files as a ZIP archive
-- Delete files and directories
-- Navigate through directories with breadcrumbs
-- List view with folders first, then files
-- Multi-selection with checkboxes for bulk actions
-- "Open in new tab" action for files
-- Compatible with S3 and other Laravel filesystem drivers
+- 🗂️ **Multi-disk Support**: Browse files on any configured Laravel filesystem disk (local, S3, etc.)
+- 📁 **Folder-first Listing**: Displays folders first, then files (like traditional file explorers)
+- ✅ **Multi-selection**: Select multiple files/folders with checkboxes for bulk operations
+- 📤 **File Upload**: Upload files directly to the current directory
+- 📥 **Download**: Download individual files or multiple files as ZIP
+- 🗑️ **Delete**: Delete files and folders with confirmation
+- 🔗 **Open in New Tab**: Open files in a new browser tab
+- 🧭 **Breadcrumb Navigation**: Easy navigation through directory structure
+- 🎨 **Native Filament Components**: Uses Filament's native UI components for consistency
 
 ## Installation
 
-You can install the package via composer:
+Install the package via Composer:
 
 ```bash
 composer require mydnic/filament-file-browser
 ```
 
-After installing the package, run the installation command:
-
-```bash
-php artisan filament-file-browser:install
-```
-
-This will:
-- Publish the configuration file
-- Create the necessary directories
-- Set up symbolic links if needed
-
-## Configuration
-
-You can publish the config file with:
+Publish the configuration file:
 
 ```bash
 php artisan vendor:publish --tag="filament-file-browser-config"
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-    // The default disk to use when the file browser is first loaded
-    'default_disk' => 'public',
-    
-    // Navigation settings
-    'navigation_group' => 'Files',
-    'navigation_sort' => 0,
-    
-    // Temporary directory for zip downloads
-    'temp_directory' => storage_path('app/temp'),
-    
-    // Maximum upload file size in MB
-    'max_upload_size' => 10,
-    
-    // Allowed file extensions for upload (empty array means all extensions are allowed)
-    'allowed_extensions' => [],
-    
-    // Disks to show in the file browser (empty array means all disks are shown)
-    'disks' => [],
-];
-```
-
 ## Usage
 
-### Register the plugin with Filament
+### Register the Plugin
 
-Add the plugin to your panel provider:
+Add the plugin to your Filament panel in your `PanelProvider`:
 
 ```php
 use Mydnic\FilamentFileBrowser\FilamentFileBrowserPlugin;
@@ -92,77 +47,66 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-### Access the file browser
+### Configuration
 
-Once installed and registered, the file browser will be available in your Filament panel under the "Files" navigation group (or the group you configured in the config file).
-
-### Using the Facade
-
-You can also use the `FilamentFileBrowser` facade to interact with the file browser programmatically:
+The plugin can be configured via the published configuration file `config/filament-file-browser.php`:
 
 ```php
-use Mydnic\FilamentFileBrowser\Facades\FilamentFileBrowser;
+return [
+    // The default disk to use when the file browser is first loaded
+    'default_disk' => 'public',
 
-// Get files and directories
-$items = FilamentFileBrowser::getFilesAndDirectories('public', '/');
+    // Navigation settings
+    'navigation_group' => 'Files',
+    'navigation_sort' => 0,
 
-// Upload a file
-$path = FilamentFileBrowser::uploadFile('public', '/', $uploadedFile);
+    // Temporary directory for zip downloads
+    'temp_directory' => storage_path('app/temp'),
 
-// Delete items
-FilamentFileBrowser::deleteItems('public', ['/path/to/file.txt', '/path/to/directory']);
+    // Maximum upload file size in MB
+    'max_upload_size' => 10,
 
-// Create a ZIP from items
-$zipPath = FilamentFileBrowser::createZipFromItems('public', ['/path/to/file.txt', '/path/to/directory']);
+    // Allowed file extensions for upload (empty array means all extensions are allowed)
+    'allowed_extensions' => [],
 
-// Get available disks
-$disks = FilamentFileBrowser::getAvailableDisks();
+    // Disks to show in the file browser (empty array means all disks are shown)
+    'disks' => [],
+];
 ```
 
-## Customization
+### Filesystem Configuration
 
-### Changing the navigation group
-
-You can change the navigation group by updating the `navigation_group` value in the config file.
-
-### Restricting disks
-
-By default, the file browser shows all configured disks. You can restrict which disks are available by setting the `disks` array in the config file:
+Make sure your filesystem disks are properly configured in `config/filesystems.php`. For S3:
 
 ```php
-'disks' => ['public', 's3'],
+'disks' => [
+    's3' => [
+        'driver' => 's3',
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION'),
+        'bucket' => env('AWS_BUCKET'),
+        'url' => env('AWS_URL'),
+        'endpoint' => env('AWS_ENDPOINT'),
+        'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+    ],
+],
 ```
 
-### File upload restrictions
+## Architecture
 
-You can restrict the file types that can be uploaded by setting the `allowed_extensions` array in the config file:
+The plugin follows a clean, modern architecture:
 
-```php
-'allowed_extensions' => ['jpg', 'png', 'pdf', 'doc', 'docx'],
-```
+- **FileBrowserPage**: Main Filament page using native components
+- **FileBrowserService**: Handles all file operations (upload, delete, zip creation)
+- **Native Filament Components**: Uses Filament's built-in form components, actions, and UI elements
+- **Custom Table View**: Only the file browser table uses a custom Blade view for optimal UX
 
-## Testing
+## Requirements
 
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Mydnic](https://github.com/mydnic)
-- [All Contributors](../../contributors)
+- PHP 8.1+
+- Laravel 10.0+
+- Filament 3.0+
 
 ## License
 
