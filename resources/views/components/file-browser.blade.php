@@ -1,17 +1,17 @@
 <div class="filament-widget">
     <div class="p-2 space-y-4">
         <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <select 
-                    wire:model="disk" 
+            <x-filament::input.wrapper>
+                <x-filament::input.select
+                    wire:model="disk"
                     wire:change="changeDisk($event.target.value)"
-                    class="text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2"
                 >
                     @foreach($this->getAvailableDisks() as $diskName => $diskLabel)
                         <option value="{{ $diskName }}">{{ $diskLabel }}</option>
                     @endforeach
-                </select>
-            </div>
+                </x-filament::input.select>
+            </x-filament::input.wrapper>
+
             <div class="flex items-center space-x-2">
                 <x-filament::button
                     wire:click="navigateUp"
@@ -21,14 +21,14 @@
                 >
                     Up
                 </x-filament::button>
-                
+
                 <form wire:submit.prevent="uploadFiles">
                     <div class="flex items-center space-x-2">
-                        <input 
-                            type="file" 
-                            wire:model="uploadedFiles" 
-                            class="hidden" 
-                            id="file-upload" 
+                        <input
+                            type="file"
+                            wire:model="uploadedFiles"
+                            class="hidden"
+                            id="file-upload"
                             multiple
                         />
                         <label for="file-upload" class="cursor-pointer">
@@ -41,7 +41,7 @@
                                 Upload
                             </x-filament::button>
                         </label>
-                        
+
                         @if(count($uploadedFiles) > 0)
                             <x-filament::button
                                 type="submit"
@@ -54,7 +54,7 @@
                         @endif
                     </div>
                 </form>
-                
+
                 <div class="flex items-center space-x-2">
                     @if(count($selectedItems) > 0)
                         <x-filament::button
@@ -65,7 +65,7 @@
                         >
                             Download ({{ count($selectedItems) }})
                         </x-filament::button>
-                        
+
                         <x-filament::button
                             wire:click="deleteSelected"
                             icon="heroicon-o-trash"
@@ -78,24 +78,24 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="flex items-center space-x-2 text-sm">
             <div class="flex items-center space-x-1">
                 @foreach($breadcrumbs as $breadcrumb)
-                    <button 
+                    <button
                         wire:click="navigateToFolder('{{ $breadcrumb['path'] }}')"
                         class="hover:underline text-primary-600"
                     >
                         {{ $breadcrumb['name'] }}
                     </button>
-                    
+
                     @if(!$loop->last)
                         <span>/</span>
                     @endif
                 @endforeach
             </div>
         </div>
-        
+
         <!-- Custom file browser table -->
         <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="overflow-x-auto">
@@ -123,9 +123,9 @@
                         @forelse($files as $file)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input 
-                                        type="checkbox" 
-                                        wire:click="toggleSelect('{{ $file['path'] }}')" 
+                                    <input
+                                        type="checkbox"
+                                        wire:click="toggleSelect('{{ $file['path'] }}')"
                                         @if($this->isSelected($file['path'])) checked @endif
                                         class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
                                     >
@@ -139,7 +139,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     @if($file['type'] === 'dir')
-                                        <button 
+                                        <button
                                             wire:click="navigateToFolder('{{ $file['path'] }}')"
                                             class="hover:underline text-primary-600"
                                         >
@@ -159,7 +159,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
                                         @if($file['type'] === 'dir')
-                                            <button 
+                                            <button
                                                 wire:click="navigateToFolder('{{ $file['path'] }}')"
                                                 class="text-primary-600 hover:text-primary-900"
                                                 title="Open"
@@ -170,7 +170,7 @@
                                                 </svg>
                                             </button>
                                         @else
-                                            <a 
+                                            <a
                                                 href="{{ route('filament-file-browser.download-file', ['disk' => $disk, 'path' => $file['path']]) }}"
                                                 target="_blank"
                                                 class="text-primary-600 hover:text-primary-900"
@@ -180,8 +180,8 @@
                                                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </a>
-                                            
-                                            <a 
+
+                                            <a
                                                 href="{{ Storage::disk($disk)->url($file['path']) }}"
                                                 target="_blank"
                                                 class="text-primary-600 hover:text-primary-900"
@@ -193,8 +193,8 @@
                                                 </svg>
                                             </a>
                                         @endif
-                                        
-                                        <button 
+
+                                        <button
                                             wire:click="deleteItem('{{ $file['path'] }}')"
                                             class="text-red-600 hover:text-red-900"
                                             title="Delete"

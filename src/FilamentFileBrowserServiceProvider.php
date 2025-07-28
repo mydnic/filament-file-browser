@@ -12,12 +12,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Route;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Mydnic\FilamentFileBrowser\Commands\FilamentFileBrowserCommand;
 use Mydnic\FilamentFileBrowser\Components\FileBrowser;
 use Mydnic\FilamentFileBrowser\Testing\TestsFilamentFileBrowser;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class FilamentFileBrowserServiceProvider extends PackageServiceProvider
 {
@@ -38,14 +38,8 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('mydnic/filament-file-browser');
             });
-
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
@@ -60,7 +54,7 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
     {
         // Register the service
         $this->app->singleton(FileBrowser::class);
-        
+
         // Register routes
         $this->registerRoutes();
     }
@@ -69,7 +63,7 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
     {
         // Register Livewire components
         $this->registerLivewireComponents();
-        
+
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
@@ -96,7 +90,7 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
         // Testing
         Testable::mixin(new TestsFilamentFileBrowser);
     }
-    
+
     protected function registerRoutes(): void
     {
         Route::group([
@@ -106,7 +100,7 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
             $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
         });
     }
-    
+
     protected function registerLivewireComponents(): void
     {
         Livewire::component('filament-file-browser::file-browser', FileBrowser::class);
@@ -126,16 +120,6 @@ class FilamentFileBrowserServiceProvider extends PackageServiceProvider
             // AlpineComponent::make('filament-file-browser', __DIR__ . '/../resources/dist/components/filament-file-browser.js'),
             Css::make('filament-file-browser-styles', __DIR__ . '/../resources/dist/filament-file-browser.css'),
             Js::make('filament-file-browser-scripts', __DIR__ . '/../resources/dist/filament-file-browser.js'),
-        ];
-    }
-
-    /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
-    {
-        return [
-            FilamentFileBrowserCommand::class,
         ];
     }
 

@@ -11,10 +11,6 @@ class FileBrowserService
 {
     /**
      * Get all files and directories in the specified path
-     *
-     * @param string $disk
-     * @param string $path
-     * @return array
      */
     public function getFilesAndDirectories(string $disk, string $path): array
     {
@@ -42,8 +38,8 @@ class FileBrowserService
         }
 
         // Sort directories and files alphabetically
-        usort($directories, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-        usort($files, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        usort($directories, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+        usort($files, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
 
         // Return directories first, then files
         return array_merge($directories, $files);
@@ -51,11 +47,6 @@ class FileBrowserService
 
     /**
      * Upload a file to the specified path
-     *
-     * @param string $disk
-     * @param string $path
-     * @param TemporaryUploadedFile $file
-     * @return string
      */
     public function uploadFile(string $disk, string $path, TemporaryUploadedFile $file): string
     {
@@ -83,10 +74,6 @@ class FileBrowserService
 
     /**
      * Delete files or directories
-     *
-     * @param string $disk
-     * @param array $paths
-     * @return void
      */
     public function deleteItems(string $disk, array $paths): void
     {
@@ -105,24 +92,20 @@ class FileBrowserService
 
     /**
      * Create a zip file from selected items
-     *
-     * @param string $disk
-     * @param array $paths
-     * @return string
      */
     public function createZipFromItems(string $disk, array $paths): string
     {
         $storage = Storage::disk($disk);
         $tempPath = storage_path('app/temp');
 
-        if (!file_exists($tempPath)) {
+        if (! file_exists($tempPath)) {
             mkdir($tempPath, 0755, true);
         }
 
         $zipFileName = 'download_' . Str::random(10) . '.zip';
         $zipFilePath = $tempPath . '/' . $zipFileName;
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         foreach ($paths as $path) {
@@ -143,11 +126,7 @@ class FileBrowserService
     /**
      * Add a directory and its contents to a zip file
      *
-     * @param ZipArchive $zip
-     * @param \Illuminate\Contracts\Filesystem\Filesystem $storage
-     * @param string $path
-     * @param string $zipPath
-     * @return void
+     * @param  \Illuminate\Contracts\Filesystem\Filesystem  $storage
      */
     protected function addDirectoryToZip(ZipArchive $zip, $storage, string $path, string $zipPath = ''): void
     {
@@ -168,10 +147,6 @@ class FileBrowserService
 
     /**
      * Check if a path is a directory
-     *
-     * @param string $disk
-     * @param string $path
-     * @return bool
      */
     protected function isDirectory(string $disk, string $path): bool
     {
@@ -185,13 +160,11 @@ class FileBrowserService
 
     /**
      * Normalize a path
-     *
-     * @param string $path
-     * @return string
      */
     protected function normalizePath(string $path): string
     {
         $path = trim($path, '/');
+
         return $path === '' ? '/' : $path;
     }
 }
