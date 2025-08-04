@@ -12,7 +12,7 @@
                 <x-slot name="heading">
                     Current Path
                 </x-slot>
-                
+
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
                         @foreach($breadcrumbs as $index => $breadcrumb)
@@ -22,11 +22,11 @@
                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                                     </svg>
                                 @endif
-                                
+
                                 @if($loop->last)
                                     <span class="text-sm font-medium text-gray-500">{{ $breadcrumb['name'] }}</span>
                                 @else
-                                    <button 
+                                    <button
                                         wire:click="navigateToFolder('{{ $breadcrumb['path'] }}')"
                                         class="text-sm font-medium text-primary-600 hover:text-primary-500"
                                     >
@@ -46,7 +46,7 @@
                 <x-slot name="heading">
                     {{ count($selectedItems) }} item(s) selected
                 </x-slot>
-                
+
                 <div class="flex space-x-2">
                     <x-filament::button
                         wire:click="downloadSelected"
@@ -56,7 +56,7 @@
                     >
                         Download
                     </x-filament::button>
-                    
+
                     <x-filament::button
                         wire:click="deleteSelected"
                         icon="heroicon-o-trash"
@@ -75,8 +75,7 @@
             <x-slot name="heading">
                 Files & Folders
             </x-slot>
-            
-            @include('filament-file-browser::components.file-browser-grid')
+            @include('filament-file-browser::components.file-browser-list')
         </x-filament::section>
     </div>
 </x-filament::page>

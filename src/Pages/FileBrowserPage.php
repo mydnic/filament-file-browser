@@ -182,7 +182,7 @@ class FileBrowserPage extends Page implements HasForms
     public function uploadFiles(array $files): void
     {
         $service = app(FileBrowserService::class);
-
+dd($files);
         foreach ($files as $file) {
             if ($file instanceof TemporaryUploadedFile) {
                 $service->uploadFile($this->disk, $this->path, $file);
