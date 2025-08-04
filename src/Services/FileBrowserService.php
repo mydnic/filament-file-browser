@@ -53,7 +53,7 @@ class FileBrowserService
         $path = $this->normalizePath($path);
         $filename = $file->getClientOriginalName();
         $targetPath = trim($path, '/') . '/' . $filename;
-dd($disk);
+
         // Handle duplicate filenames by adding a suffix
         $storage = Storage::disk($disk);
         $counter = 1;

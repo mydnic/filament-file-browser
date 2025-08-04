@@ -59,6 +59,23 @@ class FileBrowserPage extends Page implements HasForms
                     ->options($this->getAvailableDisks())
                     ->live()
                     ->afterStateUpdated(fn (string $state) => $this->changeDisk($state)),
+                
+                FileUpload::make('files')
+                    ->label('Upload Files')
+                    ->multiple()
+                    ->disk('local') // Temporary storage
+                    ->directory('temp-uploads')
+                    ->visibility('private')
+                    ->acceptedFileTypes(['*'])
+                    ->maxFiles(10)
+                    ->live()
+                    ->afterStateUpdated(function ($state) {
+                        if (!empty($state)) {
+                            $this->uploadFiles($state);
+                            // Clear the field after upload
+                            $this->form->fill(['files' => []]);
+                        }
+                    }),
             ])
             ->statePath('data');
     }
@@ -182,9 +199,9 @@ class FileBrowserPage extends Page implements HasForms
     public function uploadFiles(array $files): void
     {
         $service = app(FileBrowserService::class);
-dd($files);
+        
         foreach ($files as $file) {
-            if ($file instanceof TemporaryUploadedFile) {
+            if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 $service->uploadFile($this->disk, $this->path, $file);
             }
         }
