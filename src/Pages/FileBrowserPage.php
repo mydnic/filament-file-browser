@@ -12,7 +12,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
 
 class FileBrowserPage extends Page implements HasForms
@@ -59,7 +58,7 @@ class FileBrowserPage extends Page implements HasForms
                     ->options($this->getAvailableDisks())
                     ->live()
                     ->afterStateUpdated(fn (string $state) => $this->changeDisk($state)),
-                
+
                 FileUpload::make('files')
                     ->label('Upload Files')
                     ->multiple()
@@ -70,7 +69,7 @@ class FileBrowserPage extends Page implements HasForms
                     ->maxFiles(10)
                     ->live()
                     ->afterStateUpdated(function ($state) {
-                        if (!empty($state)) {
+                        if (! empty($state)) {
                             $this->uploadFiles($state);
                             // Clear the field after upload
                             $this->form->fill(['files' => []]);
@@ -199,7 +198,7 @@ class FileBrowserPage extends Page implements HasForms
     public function uploadFiles(array $files): void
     {
         $service = app(FileBrowserService::class);
-        
+
         foreach ($files as $file) {
             if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 $service->uploadFile($this->disk, $this->path, $file);
