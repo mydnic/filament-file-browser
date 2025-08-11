@@ -82,6 +82,7 @@ class FileBrowserPage extends Page implements HasForms
                     FileUpload::make('files')
                         ->label('Select Files')
                         ->multiple()
+                        ->preserveFilenames()
                         ->required()
                         ->disk($this->disk)
                         ->directory($this->path)
