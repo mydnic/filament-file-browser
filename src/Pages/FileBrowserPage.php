@@ -325,6 +325,7 @@ class FileBrowserPage extends Page implements HasForms
                 ->title('Invalid path')
                 ->danger()
                 ->send();
+
             return;
         }
         $this->deleteFile($path);
