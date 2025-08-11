@@ -6,6 +6,7 @@
                     class="flex py-1 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm space-x-2 items-center relative"
                     wire:key="file-list-{{ $loop->index }}"
                 >
+                    @php $pathB64 = base64_encode($file['path']); @endphp
 {{--                    <div class="flex-shrink-0">--}}
 {{--                        <x-filament::input.checkbox--}}
 {{--                            wire:click="toggleSelect({{ json_encode($file['path']) }})"--}}
@@ -38,7 +39,7 @@
                     <div class="grow">
                         @if($file['type'] === 'dir')
                             <button
-                                wire:click="navigateToFolder({{ json_encode($file['path']) }})"
+                                wire:click="navigateToFolderBase64('{{ $pathB64 }}')"
                             >
                                 {{ $file['name'] }}
                             </button>
@@ -58,7 +59,7 @@
                             <x-filament::icon-button
                                 icon="heroicon-o-arrow-top-right-on-square"
                                 tooltip="Open in new tab"
-                                href="{{$file['full_url']}}"
+                                href="{{ $file['full_url'] }}"
                                 tag="a"
                                 target="_blank"
                                 size="xs"
@@ -70,7 +71,7 @@
                             icon="heroicon-o-trash"
                             tooltip="Delete"
                             color="danger"
-                            wire:click="deleteFile({{ json_encode($file['path']) }})"
+                            wire:click="deleteFileBase64('{{ $pathB64 }}')"
                             wire:confirm="Are you sure you want to delete this item?"
                             size="xs"
                         />

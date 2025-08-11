@@ -153,6 +153,13 @@ class FileBrowserPage extends Page implements HasForms
         $this->loadFiles();
     }
 
+    public function navigateToFolderBase64(string $pathB64): void
+    {
+        $decoded = base64_decode($pathB64, true);
+        $path = $decoded !== false ? $decoded : '/';
+        $this->navigateToFolder($path);
+    }
+
     public function navigateUp(): void
     {
         $parentPath = dirname($this->path);
@@ -307,5 +314,19 @@ class FileBrowserPage extends Page implements HasForms
     {
         $this->selectedItems = [$path];
         $this->deleteSelected();
+    }
+
+    public function deleteFileBase64(string $pathB64): void
+    {
+        $decoded = base64_decode($pathB64, true);
+        $path = $decoded !== false ? $decoded : '';
+        if ($path === '') {
+            Notification::make()
+                ->title('Invalid path')
+                ->danger()
+                ->send();
+            return;
+        }
+        $this->deleteFile($path);
     }
 }

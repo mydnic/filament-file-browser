@@ -26,8 +26,9 @@
                                 @if($loop->last)
                                     <span class="text-sm font-medium text-gray-500">{{ $breadcrumb['name'] }}</span>
                                 @else
+                                    @php $b64 = base64_encode($breadcrumb['path']); @endphp
                                     <button
-                                        wire:click="navigateToFolder('{{ $breadcrumb['path'] }}')"
+                                        wire:click="navigateToFolderBase64('{{ $b64 }}')"
                                         class="text-sm font-medium text-primary-600 hover:text-primary-500"
                                     >
                                         {{ $breadcrumb['name'] }}
