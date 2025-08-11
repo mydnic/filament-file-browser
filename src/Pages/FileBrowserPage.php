@@ -10,7 +10,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
 
@@ -58,23 +58,6 @@ class FileBrowserPage extends Page implements HasForms
                     ->options($this->getAvailableDisks())
                     ->live()
                     ->afterStateUpdated(fn (string $state) => $this->changeDisk($state)),
-
-                FileUpload::make('files')
-                    ->label('Upload Files')
-                    ->multiple()
-                    ->disk('local') // Temporary storage
-                    ->directory('temp-uploads')
-                    ->visibility('private')
-                    ->acceptedFileTypes(['*'])
-                    ->maxFiles(10)
-                    ->live()
-                    ->afterStateUpdated(function ($state) {
-                        if (! empty($state)) {
-                            $this->uploadFiles($state);
-                            // Clear the field after upload
-                            $this->form->fill(['files' => []]);
-                        }
-                    }),
             ])
             ->statePath('data');
     }
@@ -132,16 +115,7 @@ class FileBrowserPage extends Page implements HasForms
     {
         $service = app(FileBrowserService::class);
 
-        // Add debugging
-        Log::debug('Loading files from disk: ' . $this->disk . ', path: ' . $this->path);
-
         $this->files = $service->getFilesAndDirectories($this->disk, $this->path);
-
-        // Debug the loaded files
-        Log::debug('Loaded ' . count($this->files) . ' files/folders');
-        foreach ($this->files as $file) {
-            Log::debug('File: ' . $file['name'] . ' (type: ' . $file['type'] . ', path: ' . $file['path'] . ')');
-        }
 
         $this->updateBreadcrumbs();
     }
@@ -271,18 +245,13 @@ class FileBrowserPage extends Page implements HasForms
         $this->downloadMultipleFiles();
     }
 
-    protected function downloadSingleFile(string $path): void
+    public function downloadSingleFile(string $path)
     {
+        // TODO Refactor because its not working
         try {
             $url = Storage::disk($this->disk)->url($path);
 
-            // Use a simpler approach without complex JavaScript
-            //            $this->js("window.open(" . json_encode($url) . ", '_blank');");
-
-            Notification::make()
-                ->title('Download started')
-                ->success()
-                ->send();
+            return response()->download(Http::sink(storage_path($path))->get($url));
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Download failed')
@@ -310,20 +279,6 @@ class FileBrowserPage extends Page implements HasForms
             Notification::make()
                 ->title('Download failed')
                 ->body('Could not create ZIP file: ' . $e->getMessage())
-                ->danger()
-                ->send();
-        }
-    }
-
-    public function openInNewTab(string $path): void
-    {
-        try {
-            $url = Storage::disk($this->disk)->url($path);
-            //            $this->js("window.open(" . json_encode($url) . ", '_blank');");
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title('Error opening file')
-                ->body('Could not open the file: ' . $e->getMessage())
                 ->danger()
                 ->send();
         }

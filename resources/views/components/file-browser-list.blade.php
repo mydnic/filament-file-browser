@@ -58,15 +58,9 @@
                             <x-filament::icon-button
                                 icon="heroicon-o-arrow-top-right-on-square"
                                 tooltip="Open in new tab"
-                                wire:click="openInNewTab({{ json_encode($file['path']) }})"
-                                size="xs"
-                                color="gray"
-                            />
-
-                            <x-filament::icon-button
-                                icon="heroicon-o-arrow-down-tray"
-                                tooltip="Download"
-                                wire:click="downloadFile({{ json_encode($file['path']) }})"
+                                href="{{$file['full_url']}}"
+                                tag="a"
+                                target="_blank"
                                 size="xs"
                                 color="gray"
                             />

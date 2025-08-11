@@ -31,6 +31,7 @@ class FileBrowserService
             if ($item['type'] === 'file') {
                 $itemData['size'] = $storage->size($item['path']);
                 $itemData['mime'] = $storage->mimeType($item['path']);
+                $itemData['full_url'] = $storage->url($item['path']);
                 $files[] = $itemData;
             } else {
                 $directories[] = $itemData;
