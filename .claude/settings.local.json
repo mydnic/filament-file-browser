@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:filamentphp.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:laravel-news.com)",
+      "WebFetch(domain:hafiz.dev)",
+      "WebFetch(domain:livewire.laravel.com)",
+      "WebFetch(domain:filamentthemes.com)",
+      "WebFetch(domain:filamentexamples.com)"
+    ]
+  }
+}
