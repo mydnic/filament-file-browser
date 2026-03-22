@@ -18,9 +18,9 @@ class FileBrowserPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-folder';
 
-    protected static string $view = 'filament-file-browser::pages.file-browser';
+    protected string $view = 'filament-file-browser::pages.file-browser';
 
     protected static ?string $navigationLabel = 'File Browser';
 
