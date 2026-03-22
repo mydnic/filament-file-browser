@@ -12,13 +12,14 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
 
 class FileBrowserPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-folder';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-folder';
 
     protected string $view = 'filament-file-browser::pages.file-browser';
 
@@ -182,7 +183,7 @@ class FileBrowserPage extends Page implements HasForms
         $service = app(FileBrowserService::class);
 
         foreach ($files as $file) {
-            if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            if ($file instanceof TemporaryUploadedFile) {
                 $service->uploadFile($this->disk, $this->path, $file);
             }
         }

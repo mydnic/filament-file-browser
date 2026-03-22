@@ -2,6 +2,7 @@
 
 namespace Mydnic\FilamentFileBrowser\Services;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -143,7 +144,7 @@ class FileBrowserService
     /**
      * Add a directory and its contents to a zip file
      *
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem  $storage
+     * @param  Filesystem  $storage
      */
     protected function addDirectoryToZip(ZipArchive $zip, $storage, string $path, string $zipPath = ''): void
     {
