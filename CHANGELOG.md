@@ -2,6 +2,10 @@
 
 All notable changes to `filament-file-browser` will be documented in this file.
 
+## v2.0.2 - 2026-04-07
+
+hotfix
+
 ## v2.0.1 - 2026-03-22
 
 hotfix
