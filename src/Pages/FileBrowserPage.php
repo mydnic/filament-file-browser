@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
 
+/**
+ * @property-read Schema $form
+ */
 class FileBrowserPage extends Page implements HasForms
 {
     use InteractsWithForms;
@@ -79,7 +82,7 @@ class FileBrowserPage extends Page implements HasForms
             Action::make('upload')
                 ->label('Upload Files')
                 ->icon('heroicon-o-arrow-up-tray')
-                ->form([
+                ->schema([
                     FileUpload::make('files')
                         ->label('Select Files')
                         ->multiple()
