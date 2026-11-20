@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
-use League\Flysystem\FilesystemException;
+use League\Flysystem\PathTraversalDetected;
 use Mydnic\FilamentFileBrowser\Services\FileBrowserService;
 
 beforeEach(function () {
@@ -46,7 +46,7 @@ it('refuses to list a path that climbs out of the disk root', function () {
     Storage::disk('public')->put('inside.txt', 'inside');
 
     app(FileBrowserService::class)->getFilesAndDirectories('public', '../');
-})->throws(FilesystemException::class);
+})->throws(PathTraversalDetected::class);
 
 it('stores an uploaded file under the current path', function () {
     $path = app(FileBrowserService::class)

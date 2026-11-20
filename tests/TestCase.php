@@ -61,6 +61,9 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
+        // Rendering the page signs the Livewire payload, which needs a key.
+        config()->set('app.key', 'base64:' . base64_encode(str_repeat('a', 32)));
+
         /*
         $migration = include __DIR__.'/../database/migrations/create_filament-file-browser_table.php.stub';
         $migration->up();
