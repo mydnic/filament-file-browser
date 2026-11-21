@@ -5,6 +5,7 @@ namespace Mydnic\FilamentFileBrowser\Tests;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
+use Filament\Facades\Filament;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
@@ -13,6 +14,8 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
 use Livewire\LivewireServiceProvider;
 use Mydnic\FilamentFileBrowser\FilamentFileBrowserServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -27,6 +30,11 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Mydnic\\FilamentFileBrowser\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
+
+        // Livewire writes its temporary uploads here, so temporaryUpload() can build real files.
+        Storage::fake(FileUploadConfiguration::disk());
+
+        Filament::setCurrentPanel('testing');
     }
 
     protected function getPackageProviders($app)
@@ -45,12 +53,16 @@ class TestCase extends Orchestra
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
             FilamentFileBrowserServiceProvider::class,
+            TestPanelProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
+
+        // Rendering the page signs the Livewire payload, which needs a key.
+        config()->set('app.key', 'base64:' . base64_encode(str_repeat('a', 32)));
 
         /*
         $migration = include __DIR__.'/../database/migrations/create_filament-file-browser_table.php.stub';
